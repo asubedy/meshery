@@ -194,6 +194,8 @@ Compatibility of Meshery with other integrated systems.
   <th><img style="height: 1rem; vertical-align: text-bottom;" src="{{site.baseurl}}/assets/img/service-meshes/nginx-sm.svg" /><a href="{{ site.repo }}-nginx-sm">meshery-nginx-sm</a></th>
   <th><img style="height: 1rem; vertical-align: text-bottom;" src="{{site.baseurl}}/assets/img/service-meshes/traefik-mesh.svg" /><a href="{{ site.repo }}-traefik-mesh">meshery-traefik-mesh</a></th>
   <th><img style="height: 1rem; vertical-align: text-bottom;" src="{{site.baseurl}}/assets/img/service-meshes/cilium.svg" /><a href="{{ site.repo }}-cilium">meshery-cilium</a></th>
+  <th><img style="height: 1rem; vertical-align: text-bottom;" src="{{site.baseurl}}/assets/img/service-meshes/consul.svg" /><a href="{{ site.repo }}-consul">meshery-consul</a></th>
+
 
 {% for k8s in k8s_tests_group%}
 
@@ -205,6 +207,7 @@ Compatibility of Meshery with other integrated systems.
 {% assign successfull_kuma = 0 %}
 {% assign successfull_traefik_mesh = 0 %}
 {% assign successfull_nginx_sm = 0 %}
+{% assign successfull_consul = 0 %}
 <td>{{k8s.name}}</td>
 {% assign k8s_items = k8s.items | group_by: "meshery-component"  %}
 {% for k8s_item in k8s_items %}
@@ -250,6 +253,13 @@ Compatibility of Meshery with other integrated systems.
 {% assign successfull_nginx_sm= successfull_nginx_sm| plus:1 %}
 {% endif %}
 {% endfor %}
+{% elsif k8s_item.name == "meshery-consul" %}
+{% assign consul_size = k8s_item.size | times:1.0 %}
+{% for single in k8s_item.items %}
+{% if single.overall-status == "passing" %}
+{% assign successfull_consul = successfull_consul | plus:1 %}
+{% endif %}
+{% endfor %}
 {% elsif k8s_item.name == "meshery-traefik-mesh" %}
 {% assign traefik_size = k8s_item.size | times:1.0 %}
 {% for single in k8s_item.items %}
@@ -274,6 +284,9 @@ Compatibility of Meshery with other integrated systems.
 <td onclick = "clickIcon(`meshery-traefik-mesh`)" class = "compatibility">{{traefik_percentage}}%</td>
 {% assign cilium_percentage = successfull_cilium | divided_by:cilium_size | times:100 | round:2 %}
 <td onclick = "clickIcon(`meshery-cilium`)" class = "compatibility">{{cilium_percentage}}%</td>
+{% assign consul_percentage = successfull_consul | divided_by:consul_size | times:100 | round:2 %}
+<td onclick = "clickIcon(`meshery-consul`)" class = "compatibility">{{consul_percentage}}%</td>
+<!-- -->
 </tr>
 {% endfor %}
 
